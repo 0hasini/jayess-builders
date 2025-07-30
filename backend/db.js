@@ -9,7 +9,7 @@ const ObjectId = Types.ObjectId;
 
 const User = new Schema({
     name: String,
-    interestedDistrict: String,
+    interestedArea: String,
     phoneNo: String,
     email: String,
     message: String

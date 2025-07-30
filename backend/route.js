@@ -33,11 +33,22 @@ adminRouter.post("/add", async (req, res) => {
 });
 
 userRouter.post("/message", async (req, res) => {
-    const { name, interestedDistrict, phoneNo, email, message } = req.body;
+    const schema = z.object({
+        name: z.string().min(1, 'Name is required'),
+        interestedArea: z.string().min(1, 'Interested area is required'),
+        phoneNo: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+        email: z.string().email('Invalid email address'),
+        message: z.string().min(1, 'Message is required'),
+    });
+    const result = schema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).send({ message: result.error.errors.map(e => e.message).join(', ') });
+    }
+    const { name, interestedArea, phoneNo, email, message } = req.body;
 
     try {
         // 1. Save user message to DB
-        const user = new UserModel({ name, interestedDistrict, phoneNo, email, message });
+        const user = new UserModel({ name, interestedArea, phoneNo, email, message });
         await user.save();
 
         // 2. Fetch admin details
@@ -55,7 +66,7 @@ userRouter.post("/message", async (req, res) => {
                 Name: ${name}
                 Phone: ${phoneNo}
                 Email: ${email}
-                District: ${interestedDistrict}
+                Area: ${interestedArea}
                 Message: ${message}
             `
         };
