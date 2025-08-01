@@ -2,14 +2,14 @@ import React from 'react';
 
 const testimonials = [
   {
-    name: 'Praveen Kumar',
-    project: 'Vihar Vimla, Hyderabad',
-    text: "Living at Vihar Vimla in Dilshuknagar has truly elevated our lifestyle. The location is central, making our daily commute and errands incredibly convenient. The apartment is spacious, well-ventilated, and thoughtfully crafted. For families like ours seeking both comfort and community, Vihar Vimla is an excellent choice."
-  },
-  {
     name: 'Sunil Kumar',
     project: 'Shoba Villa, Hyderabad',
     text: "Choosing a home at Shoba Villa has been a great decision. The environment strikes the right balance between elegance and practicality. From premium fittings to easy access to shopping and schools, everything is within reach. The professionalism of the management team only adds to the satisfaction."
+  },
+  {
+    name: 'Anil Kumar',
+    project: 'Sri Ramlu Nilayam, Hyderabad',
+    text: "Living at Sri Ramlu Nilayam in Manikonda has truly elevated our lifestyle. The location is central, making our daily commute and errands incredibly convenient. The apartment is spacious, well-ventilated, and thoughtfully crafted. For families like ours seeking both comfort and community, Sri Ramlu Nilayam is an excellent choice."
   },
   {
     name: 'Shravan',
