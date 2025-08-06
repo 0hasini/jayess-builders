@@ -18,6 +18,7 @@ function GetInTouch() {
     email: '',
     propertyType: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,6 +26,10 @@ function GetInTouch() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (isLoading) return;
+    
     const result = schema.safeParse({
       name: form.name,
       district: form.district,
@@ -36,8 +41,10 @@ function GetInTouch() {
       alert(result.error.errors.map(err => err.message).join('\n'));
       return;
     }
+    
+    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/user/message", {
+      const response = await fetch("https://api.jayessbuilders.co/user/message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -66,6 +73,8 @@ function GetInTouch() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Something went wrong while sending your message.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -134,9 +143,14 @@ function GetInTouch() {
           />
           <button
             type="submit"
-            className="bg-[#8d6748] text-white font-bold py-3 rounded mt-6 hover:bg-[#6b4f2c] transition shadow-lg"
+            disabled={isLoading}
+            className={`bg-[#8d6748] text-white font-bold py-3 rounded mt-6 transition shadow-lg ${
+              isLoading 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:bg-[#6b4f2c]'
+            }`}
           >
-            Contact Us
+            {isLoading ? 'Loading...' : 'Contact Us'}
           </button>
         </form>
       </div>
