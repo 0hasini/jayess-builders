@@ -5,7 +5,7 @@ import { z } from 'zod';
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   district: z.string().min(1, 'Interested area is required'),
-  phone: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+  phone: z.string().regex(/^[\+\d\s\-\(\)\.]{7,30}$/, 'Phone number must be 6-30 characters (country codes, spaces, dashes, parentheses, and dots allowed)'),
   email: z.string().email('Invalid email address'),
   propertyType: z.string().optional(),
 });
@@ -30,20 +30,48 @@ function GetInTouch() {
     // Prevent multiple submissions
     if (isLoading) return;
     
+    const phoneToValidate = form.phone.trim();
+    console.log("Phone number to validate:", `"${phoneToValidate}"`);
+    console.log("Phone number length:", phoneToValidate.length);
+    
     const result = schema.safeParse({
       name: form.name,
       district: form.district,
-      phone: form.phone,
+      phone: phoneToValidate,
       email: form.email,
       propertyType: form.propertyType,
     });
     if (!result.success) {
-      alert(result.error.errors.map(err => err.message).join('\n'));
+      console.log("Validation errors:", result.error.errors);
+      const errorMessages = result.error.errors 
+        ? result.error.errors.map(err => {
+            // Map field names to user-friendly names
+            const fieldMap = {
+              name: 'Full Name',
+              district: 'Interested Area', 
+              phone: 'Phone Number',
+              email: 'Email Address',
+              propertyType: 'Message'
+            };
+            const fieldName = fieldMap[err.path[0]] || err.path[0];
+            return `• ${fieldName}: ${err.message}`;
+          }).join('\n')
+        : 'Please check your input and try again.';
+      
+      alert(`Please fix the following errors:\n\n${errorMessages}`);
       return;
     }
     
     setIsLoading(true);
     try {
+      console.log("Submitting form data:", {
+        name: form.name,
+        interestedArea: form.district,
+        phoneNo: form.phone,
+        email: form.email,
+        message: form.propertyType
+      });
+      
       const response = await fetch("https://api.jayessbuilders.co/user/message", {
         method: "POST",
         headers: {
@@ -57,7 +85,13 @@ function GetInTouch() {
           message: form.propertyType
         })
       });
+      
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      
       const data = await response.json();
+      console.log("Response data:", data);
+      
       if (response.ok) {
         alert("Message sent successfully!");
         setForm({
@@ -68,11 +102,11 @@ function GetInTouch() {
           propertyType: ''
         });
       } else {
-        alert(data.message || "Failed to send message.");
+        alert(`Failed to send message: ${data.message || response.statusText}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Something went wrong while sending your message.");
+      alert(`Network error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
