@@ -3,7 +3,7 @@ function Footer() {
     <footer className="bg-white text-brown-800 py-6 px-8 md:px-16 text-center mt-10 border-t border-brown-200">
       <div className="mb-1">
         <span className="font-semibold">Head Office Address: </span>
-        <span>Plot no. 5, Puppalguda, Manikonda, Hyderabad, Telangana 500089, India</span>
+        <span>Plot no. 15-5, Puppalguda, Manikonda, Hyderabad, Telangana 500089, India</span>
       </div>
       <div className="mb-4">
         <span className="font-semibold">Branch Office Address: </span>
